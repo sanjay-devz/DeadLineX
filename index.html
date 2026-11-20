@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#18263c">
+  <meta name="description" content="A calmer way to keep track of college deadlines.">
+  <title>DeadlineX — Student planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#overview" aria-label="DeadlineX home"><span class="brand-mark">d.</span><span>deadline<span class="brand-x">x</span></span></a>
+      <div class="side-label">YOUR SPACE</div>
+      <nav class="nav-list" aria-label="Main navigation">
+        <button class="nav-link active" data-page="overview"><span class="nav-glyph">▦</span>Overview</button>
+        <button class="nav-link" data-page="tasks"><span class="nav-glyph">☷</span>My tasks<span class="nav-badge" id="nav-count">0</span></button>
+        <button class="nav-link" data-page="calendar"><span class="nav-glyph">▦</span>Calendar</button>
+        <button class="nav-link" data-page="progress"><span class="nav-glyph">↗</span>Progress</button>
+        <button class="nav-link" data-page="settings"><span class="nav-glyph">⚙</span>Settings</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="sidebar-note"><span class="note-star">✳</span><strong>One thing at a time.</strong><p>Small steps still move you forward.</p></div>
+        <div class="student-chip"><div class="student-avatar" id="sidebar-initials">AM</div><div><strong id="sidebar-name">Alex Morgan</strong><span>My workspace</span></div><button class="more-button" id="open-settings" aria-label="Open settings">···</button></div>
+      </div>
+    </aside>
+
+    <main class="main-column">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobile-menu" aria-label="Open navigation">☰</button>
+        <div class="crumb"><span>Workspace</span><b>/</b><strong id="crumb-page">Overview</strong></div>
+        <div class="topbar-right">
+          <label class="search-field"><span>⌕</span><input id="global-search" type="search" placeholder="Find a task..." aria-label="Search tasks"><kbd>⌘ K</kbd></label>
+          <button class="avatar-button" id="top-avatar" title="Profile">AM</button>
+        </div>
+      </header>
+      <section class="page-wrap">
+        <div id="view-overview" class="page-view"></div>
+        <div id="view-tasks" class="page-view hidden"></div>
+        <div id="view-calendar" class="page-view hidden"></div>
+        <div id="view-progress" class="page-view hidden"></div>
+        <div id="view-settings" class="page-view hidden"></div>
+      </section>
+    </main>
+  </div>
+
+  <dialog class="task-dialog" id="task-dialog">
+    <form id="task-form" method="dialog">
+      <div class="dialog-heading"><div><span class="kicker">TASK DETAILS</span><h2 id="dialog-title">Add a task</h2></div><button type="button" class="close-button" id="close-dialog" aria-label="Close">×</button></div>
+      <input type="hidden" id="task-id">
+      <label>What needs doing? <span class="required">*</span><input id="task-title" maxlength="120" required placeholder="e.g. Finish the lab report"></label>
+      <label>A little more detail <span class="optional">Optional</span><textarea id="task-description" rows="2" placeholder="Notes to help you get started..."></textarea></label>
+      <div class="form-row"><label>Course or subject <span class="required">*</span><input id="task-subject" required placeholder="e.g. Biology 201"></label><label>Type<select id="task-category"><option>Assignment</option><option>Exam</option><option>Lab Record</option><option>Project</option><option>Other</option></select></label></div>
+      <div class="form-row"><label>Due date and time <span class="required">*</span><input type="datetime-local" id="task-deadline" required></label><label>Priority<select id="task-priority"><option>Low</option><option selected>Medium</option><option>High</option></select></label></div>
+      <p class="form-message" id="form-message" role="alert"></p>
+      <div class="dialog-actions"><button type="button" class="button quiet-button" id="cancel-dialog">Cancel</button><button class="button primary-button" id="save-task">Save task</button></div>
+    </form>
+  </dialog>
+  <dialog class="confirm-dialog" id="confirm-dialog"><div class="confirm-mark">!</div><h2>Delete this task?</h2><p id="confirm-copy">This can’t be undone.</p><div class="dialog-actions"><button class="button quiet-button" id="keep-task">Keep task</button><button class="button delete-button" id="confirm-delete">Delete task</button></div></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>
