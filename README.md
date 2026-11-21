@@ -1,4 +1,6 @@
-# DeadlineX
+# DeadLineX
+
+One Dashboard for deadlines, reminders and priorities.
 
 A small academic deadline planner built with HTML, CSS, JavaScript, Python, Flask, and Firebase Firestore.
 
