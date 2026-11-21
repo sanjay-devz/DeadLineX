@@ -3,41 +3,133 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#18263c">
-  <meta name="description" content="A calmer way to keep track of college deadlines.">
-  <title>DeadlineX — Student planner</title>
+  <meta name="theme-color" content="#0b0f19">
+  <meta name="description" content="Aesthetic, calm, and interactive student deadline planner.">
+  <title>DeadlineX — Aesthetic Student Planner</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/styles.css">
 </head>
-<body>
+<body class="theme-midnight dark-theme">
+  <!-- Ambient background glow elements -->
+  <div class="ambient-glow glow-1" aria-hidden="true"></div>
+  <div class="ambient-glow glow-2" aria-hidden="true"></div>
+  <div class="ambient-glow glow-3" aria-hidden="true"></div>
+
+  <!-- Canvas for celebration confetti -->
+  <canvas id="confetti-canvas" class="confetti-canvas" aria-hidden="true"></canvas>
+
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
-      <a class="brand" href="#overview" aria-label="DeadlineX home"><span class="brand-mark">d.</span><span>deadline<span class="brand-x">x</span></span></a>
-      <div class="side-label">YOUR SPACE</div>
+      <div class="sidebar-header">
+        <a class="brand" href="#overview" aria-label="DeadlineX home">
+          <div class="brand-mark-wrap">
+            <span class="brand-mark">d.</span>
+            <div class="brand-glow"></div>
+          </div>
+          <span class="brand-text">deadline<span class="brand-x">x</span></span>
+          <span class="brand-badge">PRO</span>
+        </a>
+      </div>
+
+      <div class="side-label">YOUR WORKSPACE</div>
       <nav class="nav-list" aria-label="Main navigation">
-        <button class="nav-link active" data-page="overview"><span class="nav-glyph">▦</span>Overview</button>
-        <button class="nav-link" data-page="tasks"><span class="nav-glyph">☷</span>My tasks<span class="nav-badge" id="nav-count">0</span></button>
-        <button class="nav-link" data-page="calendar"><span class="nav-glyph">▦</span>Calendar</button>
-        <button class="nav-link" data-page="progress"><span class="nav-glyph">↗</span>Progress</button>
-        <button class="nav-link" data-page="settings"><span class="nav-glyph">⚙</span>Settings</button>
+        <button class="nav-link active" data-page="overview">
+          <span class="nav-glyph">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+          </span>
+          <span class="nav-text">Overview</span>
+        </button>
+        <button class="nav-link" data-page="tasks">
+          <span class="nav-glyph">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </span>
+          <span class="nav-text">My tasks</span>
+          <span class="nav-badge" id="nav-count">0</span>
+        </button>
+        <button class="nav-link" data-page="calendar">
+          <span class="nav-glyph">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </span>
+          <span class="nav-text">Calendar</span>
+        </button>
+        <button class="nav-link" data-page="progress">
+          <span class="nav-glyph">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          </span>
+          <span class="nav-text">Progress</span>
+        </button>
+        <button class="nav-link" data-page="settings">
+          <span class="nav-glyph">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </span>
+          <span class="nav-text">Settings</span>
+        </button>
       </nav>
+
       <div class="sidebar-bottom">
-        <div class="sidebar-note"><span class="note-star">✳</span><strong>One thing at a time.</strong><p>Small steps still move you forward.</p></div>
-        <div class="student-chip"><div class="student-avatar" id="sidebar-initials">AM</div><div><strong id="sidebar-name">Alex Morgan</strong><span>My workspace</span></div><button class="more-button" id="open-settings" aria-label="Open settings">···</button></div>
+        <div class="sidebar-card">
+          <div class="sidebar-card-glow"></div>
+          <div class="sidebar-card-header">
+            <span class="card-icon">✨</span>
+            <span class="card-tag">DAILY FOCUS</span>
+          </div>
+          <strong>One step at a time.</strong>
+          <p>Consistency compounds into greatness.</p>
+        </div>
+
+        <div class="student-chip">
+          <div class="avatar-ring">
+            <div class="student-avatar" id="sidebar-initials">AM</div>
+          </div>
+          <div class="student-info">
+            <strong id="sidebar-name">Alex Morgan</strong>
+            <span>Student Workspace</span>
+          </div>
+          <button class="more-button" id="open-settings" aria-label="Open settings" title="Settings">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+          </button>
+        </div>
       </div>
     </aside>
 
     <main class="main-column">
       <header class="topbar">
-        <button class="mobile-menu" id="mobile-menu" aria-label="Open navigation">☰</button>
-        <div class="crumb"><span>Workspace</span><b>/</b><strong id="crumb-page">Overview</strong></div>
+        <div class="topbar-left">
+          <button class="mobile-menu" id="mobile-menu" aria-label="Open navigation">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <div class="crumb">
+            <span class="crumb-root">Workspace</span>
+            <span class="crumb-sep">/</span>
+            <strong id="crumb-page">Overview</strong>
+          </div>
+        </div>
+
         <div class="topbar-right">
-          <label class="search-field"><span>⌕</span><input id="global-search" type="search" placeholder="Find a task..." aria-label="Search tasks"><kbd>⌘ K</kbd></label>
-          <button class="avatar-button" id="top-avatar" title="Profile">AM</button>
+          <label class="search-field" for="global-search">
+            <span class="search-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </span>
+            <input id="global-search" type="search" placeholder="Search tasks, subjects..." aria-label="Search tasks" autocomplete="off">
+            <kbd class="shortcut-badge">⌘ K</kbd>
+          </label>
+
+          <button class="icon-action-btn theme-toggle-btn" id="theme-toggle-btn" title="Toggle Theme" aria-label="Toggle theme">
+            <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+
+          <button class="topbar-add-button button primary-button" data-action="add" title="Create a new task">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span class="btn-text">Add task</span>
+          </button>
+
+          <button class="avatar-button" id="top-avatar" title="View Profile">AM</button>
         </div>
       </header>
+
       <section class="page-wrap">
         <div id="view-overview" class="page-view"></div>
         <div id="view-tasks" class="page-view hidden"></div>
@@ -48,20 +140,95 @@
     </main>
   </div>
 
+  <!-- Task Add / Edit Modal -->
   <dialog class="task-dialog" id="task-dialog">
+    <div class="dialog-glow"></div>
     <form id="task-form" method="dialog">
-      <div class="dialog-heading"><div><span class="kicker">TASK DETAILS</span><h2 id="dialog-title">Add a task</h2></div><button type="button" class="close-button" id="close-dialog" aria-label="Close">×</button></div>
+      <div class="dialog-heading">
+        <div>
+          <span class="kicker">PLANNER DETAILS</span>
+          <h2 id="dialog-title">Create a new task</h2>
+        </div>
+        <button type="button" class="close-button" id="close-dialog" aria-label="Close dialog">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
       <input type="hidden" id="task-id">
-      <label>What needs doing? <span class="required">*</span><input id="task-title" maxlength="120" required placeholder="e.g. Finish the lab report"></label>
-      <label>A little more detail <span class="optional">Optional</span><textarea id="task-description" rows="2" placeholder="Notes to help you get started..."></textarea></label>
-      <div class="form-row"><label>Course or subject <span class="required">*</span><input id="task-subject" required placeholder="e.g. Biology 201"></label><label>Type<select id="task-category"><option>Assignment</option><option>Exam</option><option>Lab Record</option><option>Project</option><option>Other</option></select></label></div>
-      <div class="form-row"><label>Due date and time <span class="required">*</span><input type="datetime-local" id="task-deadline" required></label><label>Priority<select id="task-priority"><option>Low</option><option selected>Medium</option><option>High</option></select></label></div>
+      
+      <label class="form-group">
+        <span class="form-label">What needs doing? <span class="required">*</span></span>
+        <input id="task-title" maxlength="120" required placeholder="e.g. Finish the lab report" autocomplete="off">
+      </label>
+
+      <label class="form-group">
+        <span class="form-label">Notes or instructions <span class="optional">Optional</span></span>
+        <textarea id="task-description" rows="3" placeholder="Add helpful links, resources, or checklist..."></textarea>
+      </label>
+
+      <div class="form-row">
+        <label class="form-group">
+          <span class="form-label">Course or subject <span class="required">*</span></span>
+          <input id="task-subject" required placeholder="e.g. Biology 201" autocomplete="off">
+        </label>
+        <label class="form-group">
+          <span class="form-label">Category</span>
+          <select id="task-category">
+            <option>Assignment</option>
+            <option>Exam</option>
+            <option>Lab Record</option>
+            <option>Project</option>
+            <option>Other</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="form-row">
+        <label class="form-group">
+          <span class="form-label">Due date & time <span class="required">*</span></span>
+          <input type="datetime-local" id="task-deadline" required>
+        </label>
+        <label class="form-group">
+          <span class="form-label">Priority level</span>
+          <select id="task-priority">
+            <option>Low</option>
+            <option selected>Medium</option>
+            <option>High</option>
+          </select>
+        </label>
+      </div>
+
       <p class="form-message" id="form-message" role="alert"></p>
-      <div class="dialog-actions"><button type="button" class="button quiet-button" id="cancel-dialog">Cancel</button><button class="button primary-button" id="save-task">Save task</button></div>
+
+      <div class="dialog-actions">
+        <button type="button" class="button quiet-button" id="cancel-dialog">Cancel</button>
+        <button class="button primary-button" id="save-task">
+          <span>Save task</span>
+        </button>
+      </div>
     </form>
   </dialog>
-  <dialog class="confirm-dialog" id="confirm-dialog"><div class="confirm-mark">!</div><h2>Delete this task?</h2><p id="confirm-copy">This can’t be undone.</p><div class="dialog-actions"><button class="button quiet-button" id="keep-task">Keep task</button><button class="button delete-button" id="confirm-delete">Delete task</button></div></dialog>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Confirm Delete Dialog -->
+  <dialog class="confirm-dialog" id="confirm-dialog">
+    <div class="dialog-glow delete-glow"></div>
+    <div class="confirm-mark">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <h2>Delete this task?</h2>
+    <p id="confirm-copy">This action cannot be undone.</p>
+    <div class="dialog-actions">
+      <button class="button quiet-button" id="keep-task">Cancel</button>
+      <button class="button delete-button" id="confirm-delete">Delete task</button>
+    </div>
+  </dialog>
+
+  <!-- Interactive Floating Toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <span class="toast-icon">✨</span>
+    <span class="toast-text"></span>
+  </div>
+
   <script src="/static/app.js" defer></script>
 </body>
 </html>
