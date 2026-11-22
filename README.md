@@ -35,10 +35,12 @@ The first run shows sample coursework. If Firebase is not connected yet, the pag
 2. In **Build → Firestore Database**, create a database. Choose a region close to you.
 3. In **Project settings → Service accounts**, generate a private key JSON file.
 4. Keep that file somewhere private, outside this project folder. Never commit or share it.
-5. Set `GOOGLE_APPLICATION_CREDENTIALS` to the full path of the JSON file, then restart Flask.
+5. Copy `.env.example` to `.env`, then edit `.env` so `GOOGLE_APPLICATION_CREDENTIALS` points to the full path of the JSON key. Flask reads `.env` automatically when it starts. You can also set the environment variable in your terminal instead.
 
-   - macOS or Linux: `export GOOGLE_APPLICATION_CREDENTIALS="/path/to/private-key.json"`
-   - Windows PowerShell: `$env:GOOGLE_APPLICATION_CREDENTIALS="C:\path\to\private-key.json"`
+   - macOS or Linux: `cp .env.example .env`
+   - Windows PowerShell: `Copy-Item .env.example .env`
+
+   Replace the placeholder path in `.env` with your actual path. Restart Flask after changing it.
 
 Flask creates a `tasks` collection automatically. A new Firestore database gets example tasks once, which you can edit or remove. A `settings/demo_seeded` document prevents those examples from coming back after you clear the tasks.
 

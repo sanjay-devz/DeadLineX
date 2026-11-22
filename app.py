@@ -7,6 +7,30 @@ from flask import Flask, jsonify, request, send_from_directory
 from firebase_admin import firestore, initialize_app
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
+
+
+def load_local_env():
+    """Read simple KEY=VALUE entries from .env without needing another package."""
+    env_path = os.path.join(ROOT, ".env")
+    if not os.path.isfile(env_path):
+        return
+    with open(env_path, encoding="utf-8") as env_file:
+        for line in env_file:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            if line.startswith("export "):
+                line = line[7:].strip()
+            key, separator, value = line.partition("=")
+            if not separator or not key.strip():
+                continue
+            value = value.strip()
+            if len(value) >= 2 and value[0] == value[-1] and value[0] in ("\"", "'"):
+                value = value[1:-1]
+            os.environ.setdefault(key.strip(), value)
+
+
+load_local_env()
 app = Flask(__name__, static_folder="static", static_url_path="/static")
 _db = None
 
@@ -82,10 +106,18 @@ def validate_task(data):
     if not isinstance(data, dict):
         return "Send task details as JSON."
     for key in required:
-        if not str(data.get(key, "")).strip():
+        if not isinstance(data.get(key), str) or not data[key].strip():
             return f"Please add a {key}."
     if len(data["title"].strip()) > 120:
         return "Task titles must be 120 characters or less."
+    if len(data["subject"].strip()) > 100:
+        return "Subject names must be 100 characters or less."
+    if not isinstance(data.get("description", ""), str):
+        return "Description must be text."
+    if len(data.get("description", "")) > 1000:
+        return "Descriptions must be 1,000 characters or less."
+    if "completed" in data and not isinstance(data["completed"], bool):
+        return "Task completion must be true or false."
     if data["category"] not in ("Assignment", "Exam", "Lab Record", "Project", "Other"):
         return "Choose a valid task category."
     if data["priority"] not in ("Low", "Medium", "High"):
@@ -119,22 +151,18 @@ def create_task():
 
 @app.route("/api/tasks/<task_id>", methods=["PUT", "DELETE"])
 def edit_or_delete_task(task_id):
-    reference = database().collection("tasks").document(task_id)
-    if request.method == "DELETE":
-        try:
+    try:
+        reference = database().collection("tasks").document(task_id)
+        if request.method == "DELETE":
             if not reference.get().exists:
                 return jsonify({"error": "Task not found."}), 404
             reference.delete()
             return jsonify({"ok": True})
-        except Exception as error:
-            app.logger.exception("Could not delete task from Firebase")
-            return jsonify({"error": "Could not delete the task. Check your Firebase setup.", "detail": str(error)}), 503
 
-    data = request.get_json(silent=True) or {}
-    problem = validate_task(data)
-    if problem:
-        return jsonify({"error": problem}), 400
-    try:
+        data = request.get_json(silent=True) or {}
+        problem = validate_task(data)
+        if problem:
+            return jsonify({"error": problem}), 400
         if not reference.get().exists:
             return jsonify({"error": "Task not found."}), 404
         task = {key: data.get(key) for key in ("title", "description", "subject", "deadline", "category", "priority")}
@@ -144,8 +172,9 @@ def edit_or_delete_task(task_id):
         task["id"] = task_id
         return jsonify(task)
     except Exception as error:
-        app.logger.exception("Could not update task in Firebase")
-        return jsonify({"error": "Could not update the task. Check your Firebase setup.", "detail": str(error)}), 503
+        action = "delete" if request.method == "DELETE" else "update"
+        app.logger.exception("Could not %s task in Firebase", action)
+        return jsonify({"error": f"Could not {action} the task. Check your Firebase setup.", "detail": str(error)}), 503
 
 
 if __name__ == "__main__":
